@@ -7,8 +7,9 @@ import { Searcher } from "../searcher/searcher";
 
 
 const ROUTES: RouteModel[] = [
-  { path: "create", component: FunctionCreate },
+  { path: "creator", component: FunctionCreate },
   { path: "Searcher", component: Searcher },
+  { path: "", component: Searcher },
 ]
 
 interface State{
@@ -31,7 +32,7 @@ export class Dashboard extends React.Component {
 
   render() {
     return (
-      <div className="content bg-light">
+      <div className="content bg-light pb-3">
         <nav className="navbar shadow-sm navbar-expand-lg navbar-dark bg-primary">
           <div className="container-fluid">
             <NavLink to="/dashboard" className="navbar-brand">
@@ -54,7 +55,7 @@ export class Dashboard extends React.Component {
             </div>
           </div>
         </nav>
-        <div className="container shadow-sm bg-white mt-2 rounded-2" style={{minHeight: 'calc(100vh - 80px)'}}>
+        <div className="container shadow-sm bg-white mt-2 rounded-2 pb-3" style={{minHeight: 'calc(100vh - 90px)'}}>
           <div className="row">
             <div className="col-12">
               <RouterNavigator routes={ROUTES} />
