@@ -54,17 +54,6 @@ export class Register extends React.Component {
                 />
                 {errors.username && touched.username && errors.username}
 
-                <label className="mt-2">Contraseña de nuevo:</label>
-                <input
-                  type="text"
-                  name="repite_password"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.repite_password}
-                  className="w-100 form-control"
-                />
-                {errors.repite_password && touched.repite_password && errors.repite_password}
-
                 <label className="mt-2">Contraseña:</label>
                 <input
                   type="password"
@@ -75,6 +64,17 @@ export class Register extends React.Component {
                   className="w-100 form-control"
                 />
                 {errors.password && touched.password && errors.password}
+
+                <label className="mt-2">Contraseña de nuevo:</label>
+                <input
+                  type="password"
+                  name="repite_password"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.repite_password}
+                  className="w-100 form-control"
+                />
+                {errors.repite_password && touched.repite_password && errors.repite_password}
 
                 <div className="d-grid gap-2 col-6 mx-auto mt-3">
                   <Link className="text-center" to="/login">Ya tiene una cuenta?</Link>
