@@ -2,24 +2,30 @@
 import { Formik, FormikHelpers } from "formik";
 import React from "react";
 import CodeEditor from '@uiw/react-textarea-code-editor';
+import { MethodService, CategoryService } from '../../services';
+import { MethodModel } from "../../models";
 
 interface Form {
   description: string,
   code: string,
+  name: string,
   id_category: number
 }
-interface Category{
-  id:number,
-  name:string
+interface Category {
+  id: number,
+  name: string
 }
 interface State {
   form: Form,
-  categories:Category[]
+  showAlert:boolean,
+  categories: Category[]
 }
 
 export class FunctionCreate extends React.Component {
 
   public state: State;
+  private methodService: MethodService;
+  private categoryService: CategoryService;
 
 
   constructor(props: any) {
@@ -28,16 +34,35 @@ export class FunctionCreate extends React.Component {
       form: {
         description: '',
         code: '',
+        name: '',
         id_category: 0
       },
-      categories:[
-        {id:1,name:"Prueba"}
-      ]
+      showAlert:false,
+      categories: []
     }
+    this.categoryService = new CategoryService();
+    this.methodService = new MethodService();
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.categoryService.getAllCategories().then(response => {
+      this.setState({ categories: response.data });
+    })
   }
 
   private onSubmit(values: Form, { setSubmitting }: FormikHelpers<Form>) {
+    const methos: MethodModel = {
+      id_category: values.id_category,
+      code: values.code,
+      description: values.description,
+      name: values.name,
+      id_user: Number(localStorage.getItem('id_user'))
+    }
 
+    this.methodService.createMethod(methos).then(data => {
+      this.setState({showAlert:true});
+    })
   }
 
   render() {
@@ -47,6 +72,15 @@ export class FunctionCreate extends React.Component {
           <div className="col-12">
             <h2 className="fw-bold mb-0 pb-0">Creador de funciones</h2>
             <hr className="mt-0" />
+          </div>
+        </div>
+        <div className="row mt-1">
+          <div className="col-12"> 
+            {this.state.showAlert &&
+              <div className="alert alert-success">
+                Metodo Agregado
+              </div>
+            }
           </div>
         </div>
         <Formik initialValues={this.state.form} onSubmit={this.onSubmit}>
@@ -78,7 +112,7 @@ export class FunctionCreate extends React.Component {
                   <label className="fw-bold align-middle">Categoría:</label>
                 </div>
                 <div className="col-9">
-                  <select className="form-select w-100">
+                  <select onBlur={handleBlur} onChange={handleChange} name="id_category" className="form-select w-100">
                     <option value={0}>Seleccionar</option>
                     {this.state.categories.map(category => (
                       <option key={category.id} value={category.id}>{category.name}</option>
@@ -118,9 +152,9 @@ export class FunctionCreate extends React.Component {
               </div>
               <div className="row mt-1">
                 <div className="col-6 mx-auto mt-3 d-grid gap-2">
-                    <button disabled={isSubmitting} type="submit" className="btn btn-success btn-block mx-auto">
-                      Guardar
-                    </button>
+                  <button disabled={isSubmitting} type="submit" className="btn btn-success btn-block mx-auto">
+                    Guardar
+                  </button>
                 </div>
               </div>
             </form>
