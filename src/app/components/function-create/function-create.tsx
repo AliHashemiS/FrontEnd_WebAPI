@@ -3,7 +3,9 @@ import { Formik, FormikHelpers } from "formik";
 import React from "react";
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import { MethodService, CategoryService } from '../../services';
-import { MethodModel } from "../../models";
+import { CategoryModel, MethodModel } from "../../models";
+import { CategoryModal } from "../../modals/category.modal";
+import Modal from 'react-modal';
 
 interface Form {
   description: string,
@@ -11,14 +13,11 @@ interface Form {
   name: string,
   id_category: number
 }
-interface Category {
-  id: number,
-  name: string
-}
 interface State {
   form: Form,
-  showAlert:boolean,
-  categories: Category[]
+  showAlert: boolean,
+  openModal: boolean,
+  categories: CategoryModel[]
 }
 
 export class FunctionCreate extends React.Component {
@@ -37,12 +36,14 @@ export class FunctionCreate extends React.Component {
         name: '',
         id_category: 0
       },
-      showAlert:false,
+      showAlert: false,
+      openModal: false,
       categories: []
     }
     this.categoryService = new CategoryService();
     this.methodService = new MethodService();
     this.onSubmit = this.onSubmit.bind(this);
+    this.onCloseModal = this.onCloseModal.bind(this);
   }
 
   componentDidMount() {
@@ -61,8 +62,14 @@ export class FunctionCreate extends React.Component {
     }
 
     this.methodService.createMethod(methos).then(data => {
-      this.setState({showAlert:true});
+      this.setState({ showAlert: true });
     })
+  }
+
+  private onCloseModal(data: CategoryModel) {
+    const {categories} = this.state;
+    categories.push(data);
+    this.setState({openModal:false,categories:categories})
   }
 
   render() {
@@ -75,7 +82,7 @@ export class FunctionCreate extends React.Component {
           </div>
         </div>
         <div className="row mt-1">
-          <div className="col-12"> 
+          <div className="col-12">
             {this.state.showAlert &&
               <div className="alert alert-success">
                 Metodo Agregado
@@ -111,13 +118,18 @@ export class FunctionCreate extends React.Component {
                 <div className="col-3">
                   <label className="fw-bold align-middle">Categoría:</label>
                 </div>
-                <div className="col-9">
+                <div className="col-7">
                   <select onBlur={handleBlur} onChange={handleChange} name="id_category" className="form-select w-100">
                     <option value={0}>Seleccionar</option>
                     {this.state.categories.map(category => (
                       <option key={category.id} value={category.id}>{category.name}</option>
                     ))}
                   </select>
+                </div>
+                <div className="col-2">
+                  <button type="button" onClick={()=> this.setState({openModal:true})} className="btn btn-success">
+                    Agregar
+                  </button>
                 </div>
               </div>
               <div className="row mt-3">
@@ -160,6 +172,9 @@ export class FunctionCreate extends React.Component {
             </form>
           )}
         </Formik>
+        <Modal isOpen={this.state.openModal}>
+          <CategoryModal onClose={this.onCloseModal}/>
+        </Modal>
       </div>
     );
   }
