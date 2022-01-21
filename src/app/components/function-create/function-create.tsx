@@ -48,22 +48,25 @@ export class FunctionCreate extends React.Component {
 
   componentDidMount() {
     this.categoryService.getAllCategories().then(response => {
-      this.setState({ categories: response.data });
+      this.setState({ categories: response.data.obj });
     })
   }
 
   private onSubmit(values: Form, { setSubmitting }: FormikHelpers<Form>) {
-    const methos: MethodModel = {
-      id_category: values.id_category,
-      code: values.code,
-      description: values.description,
-      name: values.name,
-      id_user: Number(localStorage.getItem('id_user'))
-    }
+    if(values.id_category && values.code && values.name && Number(localStorage.getItem('id_user')) != null) {
+      const methos: MethodModel = {
+        id_category: values.id_category,
+        code: values.code,
+        description: values.description,
+        name: values.name,
+        id_user: Number(localStorage.getItem('id_user'))
+      }
 
-    this.methodService.createMethod(methos).then(data => {
-      this.setState({ showAlert: true });
-    })
+      this.methodService.createMethod(methos).then(data => {
+        this.setState({ showAlert: true });
+      });
+    }
+    setSubmitting(false);
   }
 
   private onCloseModal(data: CategoryModel) {
