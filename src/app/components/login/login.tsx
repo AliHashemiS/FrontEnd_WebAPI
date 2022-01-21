@@ -1,6 +1,7 @@
 import { Formik, FormikHelpers } from "formik";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { UserService } from "../../services/user.service";
 
 interface LoginForm{
   username:string,
@@ -9,24 +10,43 @@ interface LoginForm{
 
 interface State{
   form:LoginForm,
+  Action:boolean
 }
 
 export class Login extends React.Component {
 
   public state: State;
+  private userService: UserService;
 
 
   constructor(props:any){
     super(props);
-    this.state = { form:{username:'',password:''}};
+    this.state = { form:{username:'',password:''}, Action:false};
+    this.userService = new UserService();
+    this.onSubmit = this.onSubmit.bind(this);
+    localStorage.setItem("id_user","0");
   }
 
   private onSubmit(values:LoginForm,{ setSubmitting }: FormikHelpers<LoginForm>){
-    console.log("Subid",values);
+    if(values.username && values.password != null) {
+      this.userService.getUser(values.username,values.password).then(data => {
+        console.log(data);
+        if(data.data.obj != null){
+          alert("Se logueo correctamente el usuario: "+ values.username);
+          console.log(data.data.obj.id);
+          localStorage.setItem("id_user",data.data.obj.id);
+          this.setState({"Action":true});
+        }
+        this.setState({ showAlert: true });
+      })
+    }
     setSubmitting(false);
   }
 
   render() {
+    if(this.state.Action){
+      return <Navigate to="dashboard" />
+    }
     return (
       <div className="content gradiant">
         <div className="card" style={{ minWidth: '400px' }}>
