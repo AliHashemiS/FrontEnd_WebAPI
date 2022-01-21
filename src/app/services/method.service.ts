@@ -10,4 +10,12 @@ export class MethodService {
     return axios.post(`${URL}`,data);
   }
 
+  public getAllMethod():Promise<any>{
+    return axios.get(URL);
+  }
+
+  public getMethodUserName(data:any):Promise<any>{
+    return axios.get(`${URL}/findWithFilter`,{params:data});
+  }
+
 }
