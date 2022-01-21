@@ -2,15 +2,14 @@ import ReactDOM from 'react-dom';
 import './styles.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter} from 'react-router-dom';
-import { App, Dashboard, Login, NotFound, Register, RouterNavigator } from './app/components';
+import { Dashboard, Login, NotFound, Register, RouterNavigator } from './app/components';
 import { RouteModel } from './app/models';
 
 
 const ROUTES:RouteModel[] = [
-    { path: "login", component: Login },
     {path: "register", component: Register },
     {path: "dashboard/*", component: Dashboard },
-    {path: "/", component: App },
+    {path: "/", component: Login },
     {path: "*", component: NotFound }
 ]
 

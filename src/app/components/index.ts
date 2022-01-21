@@ -5,4 +5,3 @@ export * from './dashboard/dashboard';
 export * from './function-create/function-create';
 export * from './searcher/searcher';
 export * from './not-found/not-found';
-export * from './app/app';
