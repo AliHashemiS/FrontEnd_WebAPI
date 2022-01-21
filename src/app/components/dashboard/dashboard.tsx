@@ -4,12 +4,13 @@ import { RouteModel } from "../../models";
 import { RouterNavigator } from "../router-navigator/routerNavigator";
 import { NavLink } from "react-router-dom";
 import { Searcher } from "../searcher/searcher";
+import { link } from "fs";
 
 
 const ROUTES: RouteModel[] = [
   { path: "creator", component: FunctionCreate },
   { path: "Searcher", component: Searcher },
-  { path: "", component: Searcher },
+  { path: "*", component: Searcher },
 ]
 
 interface State{
@@ -51,6 +52,13 @@ export class Dashboard extends React.Component {
                   </li>
                 ))}
                 
+              </ul>
+              <ul className="navbar-nav">
+                  <li className="nav-item">
+                    <NavLink end to={"/"} className="nav-link">
+                      {"Log Out"}
+                    </NavLink>
+                  </li>   
               </ul>
             </div>
           </div>
