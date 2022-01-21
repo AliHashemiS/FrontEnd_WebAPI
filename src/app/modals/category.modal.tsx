@@ -17,7 +17,7 @@ export class CategoryModal extends React.Component<Props,State> {
 
   constructor(props:Props){
     super(props);
-    this.state = {form:{id:0,name:""}};
+    this.state = {form:{name:""}};
     this.categoryService = new CategoryService();
     this.onSubmit = this.onSubmit.bind(this);
   }
