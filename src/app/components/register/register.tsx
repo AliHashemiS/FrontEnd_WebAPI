@@ -1,6 +1,8 @@
 import { Formik, FormikHelpers } from "formik";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { UserModel } from "../../models";
+import { UserService } from "../../services/user.service";
 
 interface RegisterForm{
   username:string,
@@ -10,24 +12,44 @@ interface RegisterForm{
 
 interface State{
   form:RegisterForm,
+  Action:boolean
 }
 
 export class Register extends React.Component {
 
   public state: State;
-
+  private userService: UserService;
 
   constructor(props:any){
     super(props);
-    this.state = { form:{username:'',password:'',repite_password:''}};
+    this.state = { form:{username:'',password:'',repite_password:''}, Action:false };
+    this.userService = new UserService();
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   private onSubmit(values:RegisterForm,{ setSubmitting }: FormikHelpers<RegisterForm>){
-    console.log("Subid",values);
+    if(values.username && values.password != null) {
+      const user: UserModel = {
+        email: values.username,
+        password: values.password
+      }
+      
+      this.userService.createUser(user).then(data => {
+        console.log(data.data);
+        if(data.data.obj != null){
+          alert("Se creo correctamente el usuario: "+ values.username);
+          this.setState({"Action":true});
+        }
+        this.setState({ showAlert: true });
+      });
+    }
     setSubmitting(false);
   }
 
   render() {
+    if(this.state.Action){
+      return <Navigate to="/" />
+    }
     return (
       <div className="content gradiant">
         <div className="card" style={{ minWidth: '400px' }}>
@@ -77,7 +99,7 @@ export class Register extends React.Component {
                 {errors.repite_password && touched.repite_password && errors.repite_password}
 
                 <div className="d-grid gap-2 col-6 mx-auto mt-3">
-                  <Link className="text-center" to="/login">Ya tiene una cuenta?</Link>
+                  <Link className="text-center" to="/">Ya tiene una cuenta?</Link>
                   <button className="btn btn-success btn-block mx-auto" type="submit" disabled={isSubmitting}>
                     Enviar
                   </button>
